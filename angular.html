@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        table{
+            border-collapse: collapse;
+        }
+        th,td{
+            padding: 10px;
+            border: 1px solid #000;
+        }
+    </style>
+    <script src="angular-1.5.5/angular.js"></script>
+    <script>
+        var myapp=angular.module("myapp",[]);
+        myapp.controller("myCtrl",function ($scope) {
+            $scope.data=[{
+                name:"Antetokounmpo",
+                position:"SF",
+                num:"34",
+                score:29.7,
+                age:25
+            },{
+                name:"Middleton",
+                position:"SG",
+                num:"22",
+                score:21.4,
+                age:32
+            },{
+                name:"Bledsoe",
+                position:"PG",
+                num:"6",
+                score:15.7,
+                age:33
+            },{
+                name:"Lopez",
+                position:"C",
+                num:"15",
+                score:13.8,
+                age:27
+            },{
+                name:"Hill",
+                position:"SG",
+                num:"1",
+                score:9.7,
+                age:35
+            }];
+            
+
+            $scope.sort="Select";
+            $scope.fun=function () {
+                if($scope.sort!="Select"){
+                    if($scope.sort=="Lowest score"){
+                        $scope.reverse=true;
+                    }else if($scope.sort=="Highest score"){
+                        $scope.reverse=false;
+                    }
+                }
+            };
+
+            $scope.show=false;
+            $scope.add=function () {
+                $scope.show=true
+            };
+           $scope.push=function () {
+               for(var i=0;i<$scope.data.length;i++){
+                   if($scope.name==$scope.data[i].name){
+                       alert("Repeat");
+                       return;
+                   }
+                   if($scope.name==null||$scope.position==null){
+                       alert("Empty");
+                       return;
+                   }
+               }
+               if($scope.corr==true){
+                   $scope.data[$scope.index].num=$scope.num;
+ 
+               }else{
+                   $scope.data.push({name:$scope.name,position:$scope.position,num:$scope.num,score:$scope.age});
+               }
+               $scope.num="";
+           };
+
+           $scope.correct=function (index) {
+               console.log(index);
+               $scope.show=true;
+               $scope.name=$scope.data[index].name;
+               $scope.position=$scope.data[index].position;
+               $scope.num=$scope.data[index].num;
+               $scope.score=$scope.data[index].score;
+               $scope.age=$scope.data[index].age;
+               $scope.corr=true;
+               $scope.index=index;
+           };
+            $scope.del=function(index){
+                console.log(index);
+                $scope.data.splice(index,1);
+            };
+
+            $scope.checkAll=false;
+            $scope.check2=function(){
+                if($scope.checkAll==true){
+                    for(var i=0;i<$scope.data.length;i++){
+                        $scope.data[i].check=true;
+                    }
+                }else{
+                    for(var i=0;i<$scope.data.length;i++){
+                        $scope.data[i].check=false;
+                    }
+                }
+            };
+
+            $scope.delAll=function(){
+                for(var i=0;i<$scope.data.length;i++){
+                    if($scope.data[i].check==true){
+                        $scope.data.splice(i,1);
+                        i--;
+                    }
+                }
+            }
+ 
+        });
+    </script>
+</head>
+
+<body ng-app="myapp" ng-controller="myCtrl">
+    <span>Find</span>
+    <input type="text" ng-model="search">
+    <span>Sort</span>
+    <select ng-model="sort" ng-click="fun()">
+        <option>--Select--</option>
+        <option>Lowest score</option>
+        <option>Highest score</option>
+    </select><br>
+    <button ng-click="add()">Add</button>
+    <table>
+        <thead>
+        <tr>
+            <th><input type="checkbox" ng-model="checkAll" ng-click="check2()">SelectAll</th>
+            <th>name</th>
+            <th>position</th>
+            <th>num</th>
+            <th>score</th>
+            <th>age</th>
+            <th><button ng-click="delAll()">Delete Multi</button></th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in data|filter:{name:search}|filter:search2|orderBy:"age:reverse">
+                <td><input type="checkbox" ng-model="item.check" ng-click="count($index)"></td>
+                <td>{{item.name}}</td>
+                <td>{{item.position}}</td>
+                <td>{{item.num}}</td>
+                <td>{{item.score}}</td>
+                <td>{{item.age}}</td>
+                <td><button ng-click="correct($index)">Edit</button></td>
+                <td><button ng-click="del($index)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <table ng-show="show">
+        <tr>
+            <td>name</td>
+            <td><input type="text" ng-model="name"></td>
+        </tr>
+        <tr>
+            <td>position</td>
+            <td><input type="text" ng-model="position"></td>
+        </tr>
+        <tr>
+            <td>num</td>
+            <td><input type="text" ng-model="num"></td>
+        </tr>
+        <tr>
+            <td>score</td>
+            <td><input type="text" ng-model="score"></td>
+        </tr>
+        <tr>
+            <td>age</td>
+            <td><input type="text" ng-model="age"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button ng-click="push()">add</button></td>
+        </tr>
+    </table>
+</body>
+</html>
